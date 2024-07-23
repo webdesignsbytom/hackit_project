@@ -4,16 +4,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HackIT .org</title>
+    <title>HackIT.org</title>
     <link href="./styles.css" rel="stylesheet">
 </head>
 
-<body class="h-screen bg-blue-300">
-    <div class="bg-red-500 h-screen">
-        <p class="text-green-500">hello</p>
-    </div>
+<body class="h-screen bg-slate-800 overflow-hidden w-full">
+    <div class="grid container mx-auto p-4 h-full w-full overflow-hidden">
 
+        <div class="grid grid-rows-[auto_1fr] gap-2 overflow-hidden">
+            <header class="grid text-center h-fit">
+                <div class="grid justify-center h-fit text-slate-100">
+                    <div>
+                        <h1 class="text-2xl">Welcome to <span class="font-semibold">HackIT.Org</span></h1>
+                    </div>
+                    <div>
+                        <h2>International Business and RedHat Testing</h2>
+                    </div>
+                </div>
+            </header>
+
+            <main class="grid grid-cols-2 h-full w-full text-slate-100 p-4 overflow-y-auto">
+                <section class="mt-4">
+                    <div class="mb-2">
+                        <h2 class="text-xl">Login Simulation</h2>
+                    </div>
+                    <form id="loginForm">
+                        <label for="username">Username:</label>
+                        <input class="text-slate-900" type="text" id="username" name="username"><br><br>
+                        <label for="password">Password:</label>
+                        <input class="text-slate-900" type="password" id="password" name="password"><br><br>
+                        <button type="submit"
+                            class="border border-slate-100 px-2 py-1 rounded cursor-pointer hover:bg-slate-500 active:scale-95">Login</button>
+                    </form>
+
+                    <div class="h-[1px] w-1/2 my-4 bg-slate-100"></div>
+
+                    <div class="grid">
+                        <section class="mt-4">
+                            <h2 class="text-xl">File Upload</h2>
+                            <form id="uploadForm" enctype="multipart/form-data">
+                                <label for="file">Upload a file:</label><br>
+                                <input type="file" id="file" name="file"><br><br>
+                                <button type="submit"
+                                    class="border border-slate-100 px-2 py-1 rounded cursor-pointer hover:bg-slate-500 active:scale-95">Upload
+                                    File</button>
+                            </form>
+                            <div id="fileDisplay" class="mt-4">
+                                <!-- Uploaded file information will be displayed here -->
+                            </div>
+                        </section>
+
+                        <div class="h-[1px] w-1/2 my-4 bg-slate-100"></div>
+
+                        <section class="mt-4">
+                            <h2 class="text-xl">CSRF Test</h2>
+                            <form id="csrfForm">
+                                <label for="csrfInput">Enter data to submit:</label><br>
+                                <input class="text-slate-900" type="text" id="csrfInput" name="csrfInput"><br><br>
+                                <button type="submit"
+                                    class="border border-slate-100 px-2 py-1 rounded cursor-pointer hover:bg-slate-500 active:scale-95">Submit
+                                    Data</button>
+                            </form>
+                        </section>
+                    </div>
+                </section>
+
+                <section class="mt-4">
+                    <h2 class="text-xl">Comment Section</h2>
+                    <form id="commentForm">
+                        <label for="comment">Your Comment:</label><br>
+                        <textarea class="text-slate-900" id="comment" name="comment" rows="4" cols="50"></textarea>
+                        <div>
+                            <p> h5 onclick="alert('test')">Click me> </p>
+                        </div>
+                        <button type="submit"
+                            class="border border-slate-100 px-2 py-1 rounded cursor-pointer hover:bg-slate-500 active:scale-95">Submit
+                            Comment</button>
+                    </form>
+                    <div id="commentsDisplay" class="mt-4 max-h-[200px] overflow-y-auto">
+                        <!-- Comments will be displayed here -->
+                    </div>
+
+                    <div class="h-[1px] w-1/2 my-4 bg-slate-100"></div>
+
+                    <section class="mt-4">
+                        <h2 class="text-xl">SQL Injection Simulation</h2>
+                        <form id="sqlForm">
+                            <label for="sqlInput">Enter SQL Query:</label><br>
+                            <input class="text-slate-900" type="text" id="sqlInput" name="sqlInput"><br><br>
+                            <button type="submit"
+                                class="border border-slate-100 px-2 py-1 rounded cursor-pointer hover:bg-slate-500 active:scale-95">Submit
+                                Query</button>
+                        </form>
+                        <div id="sqlResult" class="mt-4">
+                            <!-- SQL query results will be displayed here -->
+                        </div>
+                    </section>
+                </section>
+            </main>
+        </div>
+    </div>
     <script src="../src/js/main.js" type="module"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            alert('Login Attempt: ' + username + ' / ' + password);
+        });
+
+        document.getElementById('commentForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const comment = document.getElementById('comment').value;
+            console.log('comment', comment);
+            const commentsDisplay = document.getElementById('commentsDisplay');
+            console.log('commentsDisplay', commentsDisplay);
+            const newComment = document.createElement('div');
+            console.log('newComment', newComment);
+            // Directly setting the innerHTML without sanitization
+            newComment.innerHTML = comment;
+            console.log('newComment', newComment);
+            commentsDisplay.appendChild(newComment);
+        });
+
+        // Simulating a stored XSS attack
+        window.onload = function () {
+            if (document.location.hash) {
+                const commentsDisplay = document.getElementById('commentsDisplay');
+                const newComment = document.createElement('div');
+                newComment.innerHTML = decodeURIComponent(document.location.hash.substring(1));
+                commentsDisplay.appendChild(newComment);
+            }
+        };
+
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const fileInput = document.getElementById('file');
+            const fileDisplay = document.getElementById('fileDisplay');
+            const newFile = document.createElement('div');
+            // Displaying the file name
+            newFile.innerHTML = 'Uploaded file: ' + fileInput.files[0].name;
+            fileDisplay.appendChild(newFile);
+        });
+
+        document.getElementById('sqlForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const sqlInput = document.getElementById('sqlInput').value;
+            const sqlResult = document.getElementById('sqlResult');
+            const newResult = document.createElement('div');
+            // Directly displaying the SQL query input
+            newResult.innerHTML = 'SQL Query: ' + sqlInput;
+            sqlResult.appendChild(newResult);
+        });
+
+        document.getElementById('csrfForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const csrfInput = document.getElementById('csrfInput').value;
+            alert('CSRF Form submitted with data: ' + csrfInput);
+        });
+    </script>
 </body>
 
 </html>
